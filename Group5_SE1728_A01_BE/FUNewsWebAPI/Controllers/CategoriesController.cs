@@ -21,7 +21,6 @@ namespace FUNewsWebAPI.Controllers
 
 		// GET: odata/Categories
 		[EnableQuery(PageSize = 20)]
-		[Authorize(Roles = "Staff,Admin")]
 		public IActionResult Get()
 		{
 			return Ok(_service.GetCategories().AsQueryable());

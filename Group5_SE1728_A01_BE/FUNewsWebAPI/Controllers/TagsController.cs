@@ -19,7 +19,6 @@ namespace FUNewsWebAPI.Controllers
 
 		// GET: odata/Tags
 		[EnableQuery(PageSize = 20)]
-		[Authorize(Roles = "Staff,Admin")]
 		public IActionResult Get()
 		{
 			return Ok(_service.GetTags().AsQueryable());
