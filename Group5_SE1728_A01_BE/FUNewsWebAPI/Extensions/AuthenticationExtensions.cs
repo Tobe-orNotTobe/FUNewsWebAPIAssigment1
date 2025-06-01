@@ -9,7 +9,9 @@ namespace FUNewsWebAPI.Extensions
 		public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
 		{
 			var jwtSettings = configuration.GetSection("JwtSettings");
-			var secretKey = jwtSettings["SecretKey"] ?? "FUNewsManagementSystemPRN232Assignment1Group5";
+			var secretKey = jwtSettings["SecretKey"];
+			if (string.IsNullOrEmpty(secretKey))
+				throw new InvalidOperationException("Missing SecretKey in configuration");
 
 			services.AddAuthentication(options =>
 			{
@@ -24,8 +26,8 @@ namespace FUNewsWebAPI.Extensions
 					ValidateAudience = true,
 					ValidateLifetime = true,
 					ValidateIssuerSigningKey = true,
-					ValidIssuer = jwtSettings["Issuer"] ?? "FUNewsManagementSystem",
-					ValidAudience = jwtSettings["Audience"] ?? "FUNewsManagementSystemUsers",
+					ValidIssuer = jwtSettings["Issuer"],
+					ValidAudience = jwtSettings["Audience"],
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
 					RoleClaimType = "Role"
 				};
@@ -47,20 +49,23 @@ namespace FUNewsWebAPI.Extensions
 		public string GenerateToken(short accountId, string email, int role)
 		{
 			var jwtSettings = _configuration.GetSection("JwtSettings");
-			var secretKey = jwtSettings["SecretKey"] ?? "YourDefaultSecretKeyHereMustBeAtLeast32Characters!";
+			var secretKey = jwtSettings["SecretKey"];
+			if (string.IsNullOrEmpty(secretKey))
+				throw new InvalidOperationException("Missing SecretKey in configuration");
+
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 			var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
 			var claims = new[]
 			{
-				new System.Security.Claims.Claim("AccountId", accountId.ToString()),
-				new System.Security.Claims.Claim("Email", email),
-				new System.Security.Claims.Claim("Role", GetRoleName(role))
-			};
+			new System.Security.Claims.Claim("AccountId", accountId.ToString()),
+			new System.Security.Claims.Claim("Email", email),
+			new System.Security.Claims.Claim("Role", GetRoleName(role))
+		};
 
 			var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
-				issuer: jwtSettings["Issuer"] ?? "FUNewsManagementSystem",
-				audience: jwtSettings["Audience"] ?? "FUNewsManagementSystemUsers",
+				issuer: jwtSettings["Issuer"],
+				audience: jwtSettings["Audience"],
 				claims: claims,
 				expires: DateTime.Now.AddMinutes(30),
 				signingCredentials: credentials

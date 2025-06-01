@@ -1,5 +1,4 @@
 ﻿using BusinessObjects;
-using FUNewsWebAPI.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
