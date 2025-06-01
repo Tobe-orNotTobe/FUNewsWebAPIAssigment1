@@ -128,31 +128,5 @@ namespace FUNewsWebAPI.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
-
-		// Custom action to search news articles
-		[EnableQuery]
-		[AllowAnonymous]
-		public IActionResult Search([FromQuery] string searchTerm)
-		{
-			if (string.IsNullOrEmpty(searchTerm))
-			{
-				return BadRequest("Search term is required.");
-			}
-
-			var articles = _service.GetNewsArticles();
-
-			articles = articles.Where(a =>
-				(a.NewsTitle != null && a.NewsTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
-				(a.Headline != null && a.Headline.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
-				(a.NewsContent != null && a.NewsContent.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-			).ToList();
-
-			if (!User.Identity.IsAuthenticated)
-			{
-				articles = articles.Where(a => a.NewsStatus == true).ToList();
-			}
-
-			return Ok(articles.AsQueryable());
-		}
 	}
 }

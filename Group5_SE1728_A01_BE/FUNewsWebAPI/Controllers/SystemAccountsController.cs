@@ -19,7 +19,6 @@ namespace FUNewsWebAPI.Controllers
 		}
 
 		// GET: odata/SystemAccounts
-		[HttpGet]
 		[EnableQuery(PageSize = 20)]
 		[Authorize(Roles = "Admin")]
 		public IActionResult Get()
