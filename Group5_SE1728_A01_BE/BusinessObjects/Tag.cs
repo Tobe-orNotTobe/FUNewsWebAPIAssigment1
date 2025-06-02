@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObjects;
 
 public partial class Tag
 {
+    [Key]
     public int TagId { get; set; }
 
     public string? TagName { get; set; }

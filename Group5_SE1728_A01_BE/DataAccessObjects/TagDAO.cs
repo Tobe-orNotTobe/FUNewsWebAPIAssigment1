@@ -52,7 +52,7 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
-				var t1 = context.Tags.SingleOrDefault(t => t.TagId == t.TagId);
+				var t1 = context.Tags.SingleOrDefault(c => c.TagId == t.TagId);
 				context.Tags.Remove(t1);
 
 				context.SaveChanges();
