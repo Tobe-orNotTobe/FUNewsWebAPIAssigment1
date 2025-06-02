@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessObjects
 {
@@ -24,6 +25,13 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
+
+				if (t.TagId == 0)
+				{
+					var maxId = context.Tags.Any() ? context.Tags.Max(tag => tag.TagId) : 0;
+					t.TagId = maxId + 1;
+				}
+
 				context.Tags.Add(t);
 				context.SaveChanges();
 			}
@@ -52,8 +60,15 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
-				var t1 = context.Tags.SingleOrDefault(c => c.TagId == t.TagId);
-				context.Tags.Remove(t1);
+
+				context.Database.ExecuteSqlRaw("DELETE FROM NewsTag WHERE TagId = {0}", t.TagId);
+
+				var tagToDelete = context.Tags.SingleOrDefault(tag => tag.TagId == t.TagId);
+				if (tagToDelete != null)
+				{
+					context.Tags.Remove(tagToDelete);
+					context.SaveChanges();
+				}
 
 				context.SaveChanges();
 			}
