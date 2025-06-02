@@ -52,8 +52,8 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
-				var c1 = context.Categories.SingleOrDefault(c => c.CategoryId == c.CategoryId);
-				context.Categories.Remove(c1);
+                var c1 = context.Categories.SingleOrDefault(cat => cat.CategoryId == c.CategoryId);
+                context.Categories.Remove(c1);
 
 				context.SaveChanges();
 			}
