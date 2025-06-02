@@ -27,7 +27,7 @@ namespace FUNewsWebAPI.Controllers
 
 		// GET: odata/SystemAccounts(5)
 		[EnableQuery]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin, Staff")]
 		public IActionResult Get([FromODataUri] short key)
 		{
 			var account = _service.GetAccountById(key);
@@ -61,7 +61,7 @@ namespace FUNewsWebAPI.Controllers
 
 		// PUT: odata/SystemAccounts(5)
 		[EnableQuery]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin,Staff")]
 		public IActionResult Put([FromODataUri] short key, [FromBody] SystemAccount systemAccount)
 		{
 			if (!ModelState.IsValid)
