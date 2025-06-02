@@ -11,12 +11,10 @@ namespace FUNewsWebAPI.Controllers
     public class NewsArticlesController : ODataController
     {
         private readonly INewsArticleService _service;
-        private readonly ITagService _tagService;
 
-        public NewsArticlesController(INewsArticleService service, ITagService tagService)
+        public NewsArticlesController(INewsArticleService service)
         {
             _service = service;
-            _tagService = tagService;
         }
 
         // GET: odata/NewsArticles - Public access for active news

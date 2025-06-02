@@ -38,8 +38,21 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
-				context.Entry(c).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-				context.SaveChanges();
+
+				var existingCategory = context.Categories.Find(c.CategoryId);
+				if (existingCategory != null)
+				{
+					existingCategory.CategoryName = c.CategoryName;
+					existingCategory.CategoryDesciption = c.CategoryDesciption;
+					existingCategory.ParentCategoryId = c.ParentCategoryId;
+					existingCategory.IsActive = c.IsActive; 
+
+					context.SaveChanges();
+				}
+				else
+				{
+					throw new Exception("Category not found");
+				}
 			}
 			catch (Exception e)
 			{

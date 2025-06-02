@@ -26,7 +26,7 @@ namespace FUNewsWebAPI.Controllers
 
 		// GET: odata/Tags(5)
 		[EnableQuery]
-		[Authorize(Roles = "Staff,Admin")]
+		[Authorize(Roles = "Staff")]
 		public IActionResult Get([FromODataUri] int key)
 		{
 			var tag = _service.GetTagById(key);

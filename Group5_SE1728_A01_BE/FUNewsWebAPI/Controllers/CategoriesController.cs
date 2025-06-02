@@ -28,7 +28,7 @@ namespace FUNewsWebAPI.Controllers
 
 		// GET: odata/Categories(5)
 		[EnableQuery]
-		[Authorize(Roles = "Staff,Admin")]
+		[Authorize(Roles = "Staff")]
 		public IActionResult Get([FromODataUri] short key)
 		{
 			var category = _service.GetCategoryById(key);
