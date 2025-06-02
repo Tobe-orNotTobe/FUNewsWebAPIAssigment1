@@ -4,7 +4,7 @@ namespace DataAccessObjects
 {
 	public class TagDAO
 	{
-		public static List<Tag> GetTag()
+		public static List<Tag> GetTags()
 		{
 			var listTag = new List<Tag>();
 			try
@@ -63,7 +63,7 @@ namespace DataAccessObjects
 			}
 		}
 
-		public static Tag GetArticleByID(int id)
+		public static Tag GetTagByID(int id)
 		{
 			using var db = new FunewsManagementContext();
 			return db.Tags.SingleOrDefault(c => c.TagId.Equals(id));

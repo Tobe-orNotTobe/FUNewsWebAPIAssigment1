@@ -26,6 +26,14 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
+
+				if (n.Tags != null && n.Tags.Any())
+				{
+					var tagIds = n.Tags.Select(t => t.TagId).ToList();
+					var existingTags = context.Tags.Where(t => tagIds.Contains(t.TagId)).ToList();
+					n.Tags = existingTags;
+				}
+
 				context.NewsArticles.Add(n);
 				context.SaveChanges();
 			}
@@ -40,7 +48,42 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
-				context.Entry(n).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+				var existingArticle = context.NewsArticles
+				 .Include(a => a.Tags)
+				 .FirstOrDefault(a => a.NewsArticleId == n.NewsArticleId);
+				if (existingArticle == null)
+				{
+					throw new Exception("Article not found");
+				}
+
+				existingArticle.NewsTitle = n.NewsTitle;
+				existingArticle.Headline = n.Headline;
+				existingArticle.NewsContent = n.NewsContent;
+				existingArticle.NewsSource = n.NewsSource;
+				existingArticle.CategoryId = n.CategoryId;
+				existingArticle.NewsStatus = n.NewsStatus;
+				existingArticle.UpdatedById = n.UpdatedById;
+				existingArticle.ModifiedDate = n.ModifiedDate;
+
+				if (n.Tags != null)
+				{
+					// Clear existing tags
+					existingArticle.Tags.Clear();
+
+					// Add new tags
+					if (n.Tags.Any())
+					{
+						var tagIds = n.Tags.Select(t => t.TagId).ToList();
+						var existingTags = context.Tags.Where(t => tagIds.Contains(t.TagId)).ToList();
+
+						foreach (var tag in existingTags)
+						{
+							existingArticle.Tags.Add(tag);
+						}
+					}
+				}
+
 				context.SaveChanges();
 			}
 			catch (Exception e)
@@ -54,10 +97,16 @@ namespace DataAccessObjects
 			try
 			{
 				using var context = new FunewsManagementContext();
-				var n1 = context.NewsArticles.SingleOrDefault(c => c.NewsArticleId == n.NewsArticleId);
-				context.NewsArticles.Remove(n1);
+				var n1 = context.NewsArticles
+				   .Include(a => a.Tags)
+				   .SingleOrDefault(c => c.NewsArticleId == n.NewsArticleId);
 
-				context.SaveChanges();
+				if (n1 != null)
+				{
+					n1.Tags.Clear();
+					context.NewsArticles.Remove(n1);
+					context.SaveChanges();
+				}
 			}
 			catch (Exception e)
 			{
@@ -68,7 +117,7 @@ namespace DataAccessObjects
 		public static NewsArticle GetArticleByID(string id)
 		{
 			using var db = new FunewsManagementContext();
-			return db.NewsArticles.Include(f => f.Tags).Include(f => f.Category).SingleOrDefault(c => c.NewsArticleId.Equals(id));
+			return db.NewsArticles.Include(f => f.Tags).Include(f => f.Category).Include(f => f.CreatedBy).SingleOrDefault(c => c.NewsArticleId.Equals(id));
 		}
 	}
 }

@@ -8,9 +8,9 @@ namespace Repositories
 	{
 		public void DeleteTag(Tag c) => TagDAO.DeleteTag(c);
 
-		public Tag GetTagById(int id) => TagDAO.GetArticleByID(id);
+		public Tag GetTagById(int id) => TagDAO.GetTagByID(id);
 
-		public List<Tag> GetTags() => TagDAO.GetTag();
+		public List<Tag> GetTags() => TagDAO.GetTags();
 
 		public void SaveTag(Tag c) => TagDAO.SaveTag(c);
 
