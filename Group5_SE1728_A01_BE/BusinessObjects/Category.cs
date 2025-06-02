@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObjects;
 
 public partial class Category
 {
+    [Key]
     public short CategoryId { get; set; }
 
     public string CategoryName { get; set; } = null!;
